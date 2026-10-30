@@ -4,3 +4,4 @@ infrastructure/connect/plugins/*
 
 __pycache__/
 *.pyc
+*.md
