@@ -1,0 +1,6 @@
+infrastructure/.env
+infrastructure/connect/plugins/*
+!infrastructure/connect/plugins/.gitkeep
+
+__pycache__/
+*.pyc

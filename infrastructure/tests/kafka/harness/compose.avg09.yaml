@@ -1,0 +1,28 @@
+# AVG-09 overrides on top of compose.yaml + compose.local-pipeline.yaml. Always run under the
+# dedicated project (avg09.py uses `coin-market-avg09`), so every named volume — Kafka, MySQL,
+# Spark checkpoints — is new and the other projects' volumes are never touched.
+services:
+  spark-average:
+    # Test entrypoint: production stream_to_mysql.main() + AfterCommitFault + progress record.
+    entrypoint: ["/opt/spark/bin/spark-submit", "--master", "local[2]", "/code/average/tests/stream_with_faults.py"]
+    environment:
+      AVERAGE_CHECKPOINT: ${AVG09_CHECKPOINT:?Set AVG09_CHECKPOINT}
+      AVG09_FAULT_RECORD: /artifacts/faults.jsonl
+      AVG09_PROGRESS_RECORD: /artifacts/progress.jsonl
+      AVG09_FAIL_AFTER_COMMIT: ${AVG09_FAIL_AFTER_COMMIT:-}
+      AVG09_FAULT_MODE: ${AVG09_FAULT_MODE:-exception}
+      AVG09_TRIGGER: ${AVG09_TRIGGER:-}
+    volumes:
+      - ${HARNESS_REPORT_DIR:?Set HARNESS_REPORT_DIR}:/artifacts
+    # A failed batch must stop the container so the test decides when to restart it.
+    restart: "no"
+  avg09-tools:
+    # aiokafka producer/consumer inside the project network (no host ports are opened).
+    build: .
+    depends_on:
+      init-topics: {condition: service_completed_successfully}
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+    volumes:
+      - .:/avg09:ro
+    entrypoint: ["python", "/avg09/avg09_kafka.py"]

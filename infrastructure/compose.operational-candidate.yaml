@@ -1,0 +1,21 @@
+# Use only for a fresh cluster after validating the assumed traffic envelope.
+services:
+  kafka-1:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  kafka-2:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  kafka-3:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  init-topics:
+    environment:
+      KAFKA_TOPIC_PROFILE: operational-candidate
+  connect:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms512m -Xmx1536m
+    mem_limit: 3g
+  init-connectors:
+    volumes:
+      - ./connect/connector-configs.operational-candidate:/connector-configs:ro

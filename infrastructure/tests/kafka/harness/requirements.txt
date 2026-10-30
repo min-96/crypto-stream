@@ -1,0 +1,4 @@
+aiokafka==0.11.0
+websockets==13.1
+boto3==1.35.99
+requests==2.32.3

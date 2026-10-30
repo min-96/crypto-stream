@@ -1,0 +1,28 @@
+services:
+  kafka-1:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  kafka-2:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  kafka-3:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  init-topics:
+    environment:
+      KAFKA_TOPIC_PROFILE: operational-candidate
+  connect:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms512m -Xmx1536m
+    mem_limit: 3g
+  minio:
+    environment:
+      MINIO_PROMETHEUS_AUTH_TYPE: public
+  tester:
+    environment:
+      BENCH_DURATION_SECONDS: "80"
+      BENCH_UPDATES_PER_KEY: "12"
+      BENCH_PREPROCESS_INSTANCES: "6"
+      BENCH_MINIO_METRICS: "1"
+    volumes:
+      - ../../../connect/connector-configs.operational-candidate:/configs:ro

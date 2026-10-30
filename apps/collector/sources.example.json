@@ -1,0 +1,9 @@
+[
+  {
+    "name": "example-exchange-ticker",
+    "url": "wss://replace-with-exchange-endpoint.example/ws",
+    "topic": "koreaSocketDataInBTC-ticker",
+    "key": "BINANCE:BTC:USDT",
+    "subscribe": [{"replace": "with exchange-specific subscription payload"}]
+  }
+]

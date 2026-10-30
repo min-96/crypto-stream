@@ -1,0 +1,14 @@
+services:
+  mock-upbit:
+    build:
+      context: ../apps/collector
+      dockerfile: Dockerfile.mock-upbit
+    environment:
+      MOCK_UPBIT_INTERVAL_MS: ${MOCK_UPBIT_INTERVAL_MS:-1000}
+      MOCK_UPBIT_TEMPLATE: /app/upbit_ticker.json
+    volumes:
+      - ../apps/preprocessing/tests/fixtures/upbit_ticker.json:/app/upbit_ticker.json:ro
+    restart: unless-stopped
+  collector:
+    depends_on:
+      mock-upbit: {condition: service_started}

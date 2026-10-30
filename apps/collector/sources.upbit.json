@@ -1,0 +1,15 @@
+[
+  {
+    "name": "upbit-btc-ticker",
+    "url": "wss://api.upbit.com/websocket/v1",
+    "topic": "koreaSocketDataInBTC-ticker",
+    "key": "UPBIT:BTC:KRW",
+    "subscribe": [
+      [
+        {"ticket": "coin-market-upbit-btc-ticker"},
+        {"type": "ticker", "codes": ["KRW-BTC"]},
+        {"format": "DEFAULT"}
+      ]
+    ]
+  }
+]

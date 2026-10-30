@@ -1,0 +1,13 @@
+services:
+  collector:
+    build: ../apps/collector
+    depends_on:
+      kafka-1: {condition: service_healthy}
+      kafka-2: {condition: service_healthy}
+      kafka-3: {condition: service_healthy}
+    environment:
+      COLLECTOR_SOURCES: /config/sources.json
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+    volumes:
+      - ${COLLECTOR_SOURCES_FILE:?Set COLLECTOR_SOURCES_FILE to an existing JSON file}:/config/sources.json:ro
+    restart: unless-stopped

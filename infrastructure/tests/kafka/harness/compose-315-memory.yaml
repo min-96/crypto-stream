@@ -1,0 +1,13 @@
+services:
+  kafka-1:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  kafka-2:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  kafka-3:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  connect:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx768m

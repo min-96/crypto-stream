@@ -1,0 +1,6 @@
+FROM python:3.12.7-slim
+WORKDIR /app
+RUN pip install --no-cache-dir websockets==13.1
+COPY mock_upbit.py .
+USER 65532:65532
+CMD ["python", "mock_upbit.py"]

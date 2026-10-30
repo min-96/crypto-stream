@@ -1,0 +1,107 @@
+services:
+  connect:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+    mem_limit: 1g
+  mock-upbit:
+    build:
+      context: ../../../../apps/collector
+      dockerfile: Dockerfile.mock-upbit
+    image: coin-market-mock-ticker:local
+    environment:
+      MOCK_EXCHANGE: UPBIT
+      MOCK_UPBIT_TEMPLATE: /app/ticker.json
+      MOCK_UPBIT_INTERVAL_MS: ${MOCK_UPBIT_INTERVAL_MS:-1000}
+    volumes:
+      - ../../../../apps/preprocessing/tests/fixtures/upbit_ticker.json:/app/ticker.json:ro
+    restart: unless-stopped
+  mock-bithumb:
+    build:
+      context: ../../../../apps/collector
+      dockerfile: Dockerfile.mock-upbit
+    image: coin-market-mock-ticker:local
+    environment:
+      MOCK_EXCHANGE: BITHUMB
+      MOCK_UPBIT_TEMPLATE: /app/ticker.json
+      MOCK_UPBIT_INTERVAL_MS: ${MOCK_BITHUMB_INTERVAL_MS:-2000}
+    volumes:
+      - ../../../../apps/preprocessing/tests/fixtures/bithumb_ticker.json:/app/ticker.json:ro
+    restart: unless-stopped
+  collector:
+    build: ../../../../apps/collector
+    depends_on:
+      init-topics: {condition: service_completed_successfully}
+      mock-upbit: {condition: service_started}
+      mock-bithumb: {condition: service_started}
+    environment:
+      COLLECTOR_SOURCES: /config/sources.json
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+    volumes:
+      - ../../../../apps/collector/sources.mock-korea.json:/config/sources.json:ro
+    restart: unless-stopped
+  preprocessing-ticker:
+    build: ../../../../apps/preprocessing
+    depends_on:
+      init-topics: {condition: service_completed_successfully}
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      PREPROCESS_INSTANCE_ID: local-pipeline-1
+    restart: unless-stopped
+  init-buckets:
+    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    depends_on:
+      minio: {condition: service_started}
+    environment:
+      MINIO_ROOT_USER: harness-local
+      MINIO_ROOT_PASSWORD: harness-local-only
+    volumes:
+      - ../../../minio/init-buckets.sh:/init-buckets.sh:ro
+    entrypoint: ["/bin/sh", "/init-buckets.sh"]
+  init-preprocessed-connector:
+    image: coin-market-connect-s3:10.5.25
+    depends_on:
+      connect: {condition: service_healthy}
+      init-buckets: {condition: service_completed_successfully}
+    volumes:
+      - ../../../connect/connector-configs/preprocessed-to-minio.json:/config.json:ro
+    entrypoint:
+      - bash
+      - -c
+      - "curl -fsS -X PUT -H 'Content-Type: application/json' --data-binary @/config.json http://connect:8083/connectors/preprocessed-to-minio/config"
+  mysql:
+    image: mysql:8.4.3
+    environment:
+      MYSQL_ROOT_PASSWORD: harness-local-only
+      MYSQL_DATABASE: coin_market
+      MYSQL_USER: harness-local
+      MYSQL_PASSWORD: harness-local-only
+    volumes:
+      - local-mysql-data:/var/lib/mysql
+      - ../../../mysql/init/coin_average.sql:/docker-entrypoint-initdb.d/coin_average.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  spark-average:
+    image: coin-market-spark:3.5.3-kafka-mysql
+    depends_on:
+      mysql: {condition: service_healthy}
+      preprocessing-ticker: {condition: service_started}
+      checkpoint-init: {condition: service_completed_successfully}
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      MYSQL_JDBC_URL: jdbc:mysql://mysql:3306/coin_market
+      MYSQL_USER: harness-local
+      MYSQL_PASSWORD: harness-local-only
+      AVERAGE_CHECKPOINT: /checkpoints/average
+      PYTHONPATH: /code/average:/code
+    volumes:
+      - ../../../../apps/average:/code/average:ro
+      - ../../../../data_constructure.py:/code/data_constructure.py:ro
+      - spark-checkpoints:/checkpoints
+    entrypoint: ["/opt/spark/bin/spark-submit", "--master", "local[2]", "/code/average/stream_to_mysql.py"]
+    restart: unless-stopped
+
+volumes:
+  local-mysql-data:

@@ -1,0 +1,9 @@
+services:
+  connect:
+    volumes:
+      - ./monitor-connect.sh:/monitor-connect.sh:ro
+  tester:
+    environment:
+      BENCH_ARCHIVE_BATCH: "1"
+    volumes:
+      - ../../../connect/connector-configs.batch-candidate:/configs:ro

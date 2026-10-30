@@ -1,0 +1,20 @@
+{
+  "connector.class": "io.confluent.connect.s3.S3SinkConnector",
+  "tasks.max": "4",
+  "s3.region": "us-east-1",
+  "s3.part.size": "5242880",
+  "s3.path.style.access.enabled": "true",
+  "store.url": "http://minio:9000",
+  "storage.class": "io.confluent.connect.s3.storage.S3Storage",
+  "format.class": "io.confluent.connect.s3.format.bytearray.ByteArrayFormat",
+  "flush.size": "32",
+  "rotate.schedule.interval.ms": "10000",
+  "timezone": "UTC",
+  "schema.compatibility": "NONE",
+  "topics": "RegionKorea_TickerPreprocessing,RegionKorea_OrderbookPreprocessing,RegionNE_TickerPreprocessing,RegionNE_OrderbookPreprocessing,RegionAsia_TickerPreprocessing,RegionAsia_OrderbookPreprocessing",
+  "s3.bucket.name": "preprocessed",
+  "value.converter": "org.apache.kafka.connect.converters.ByteArrayConverter",
+  "key.converter": "org.apache.kafka.connect.converters.ByteArrayConverter",
+  "store.kafka.keys": "true",
+  "keys.format.class": "io.confluent.connect.s3.format.bytearray.ByteArrayFormat"
+}

@@ -1,0 +1,131 @@
+x-broker-env: &broker-env
+  CLUSTER_ID: ${HARNESS_CLUSTER_ID:?Set HARNESS_CLUSTER_ID}
+  KAFKA_PROCESS_ROLES: broker,controller
+  KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+  KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+  KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+  KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+  KAFKA_MIN_INSYNC_REPLICAS: 2
+
+x-broker-health: &broker-health
+  test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+  interval: 5s
+  timeout: 5s
+  retries: 30
+
+services:
+  kafka-1:
+    image: confluentinc/cp-kafka:7.6.1
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9092
+    volumes: [kafka-1-data:/var/lib/kafka/data]
+    healthcheck: *broker-health
+  kafka-2:
+    image: confluentinc/cp-kafka:7.6.1
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:9092
+    volumes: [kafka-2-data:/var/lib/kafka/data]
+    healthcheck: *broker-health
+  kafka-3:
+    image: confluentinc/cp-kafka:7.6.1
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:9092
+    volumes: [kafka-3-data:/var/lib/kafka/data]
+    healthcheck: *broker-health
+  init-topics:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on:
+      kafka-1: {condition: service_healthy}
+      kafka-2: {condition: service_healthy}
+      kafka-3: {condition: service_healthy}
+    volumes:
+      - ../../../kafka/init-topics.sh:/init-topics.sh:ro
+    entrypoint:
+      - bash
+      - -c
+      - for attempt in $(seq 1 20); do bash /init-topics.sh && exit 0; sleep 2; done; exit 1
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: ["server", "/data"]
+    environment:
+      MINIO_ROOT_USER: harness-local
+      MINIO_ROOT_PASSWORD: harness-local-only
+    volumes: [minio-data:/data]
+  connect:
+    build: ../../../connect
+    image: coin-market-connect-s3:10.5.25
+    depends_on:
+      init-topics: {condition: service_completed_successfully}
+      minio: {condition: service_started}
+    environment:
+      AWS_ACCESS_KEY_ID: harness-local
+      AWS_SECRET_ACCESS_KEY: harness-local-only
+      AWS_REGION: us-east-1
+      CONNECT_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_GROUP_ID: harness-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: connect-status
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.converters.ByteArrayConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.converters.ByteArrayConverter
+      CONNECT_CONSUMER_ISOLATION_LEVEL: read_committed
+      CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8083/connector-plugins >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 36
+  tester:
+    build: .
+    depends_on:
+      connect: {condition: service_healthy}
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      MINIO_ENDPOINT: http://minio:9000
+      CONNECT_URL: http://connect:8083
+    volumes:
+      - ../../../../apps/collector/collector.py:/code/collector.py:ro
+      - ../../../../apps/preprocessing:/code/preprocessing:ro
+      - ../../../connect/connector-configs:/configs:ro
+      - ${HARNESS_REPORT_DIR:?Set HARNESS_REPORT_DIR}:/artifacts
+    entrypoint: ["python", "/harness/check.py"]
+  checkpoint-init:
+    image: busybox:1.36.1
+    user: "0:0"
+    command: ["chown", "-R", "185:185", "/checkpoints"]
+    volumes: [spark-checkpoints:/checkpoints]
+  spark-test:
+    build: ../../../spark
+    image: coin-market-spark:3.5.3-kafka-mysql
+    depends_on:
+      init-topics: {condition: service_completed_successfully}
+      checkpoint-init: {condition: service_completed_successfully}
+    user: "185:185"
+    volumes:
+      - .:/harness:ro
+      - spark-checkpoints:/checkpoints
+      - ${HARNESS_REPORT_DIR:?Set HARNESS_REPORT_DIR}:/artifacts
+    entrypoint: ["/opt/spark/bin/spark-submit", "--master", "local[2]", "/harness/check_spark.py"]
+
+volumes:
+  kafka-1-data:
+  kafka-2-data:
+  kafka-3-data:
+  minio-data:
+  spark-checkpoints:

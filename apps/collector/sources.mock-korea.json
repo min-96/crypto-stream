@@ -1,0 +1,16 @@
+[
+  {
+    "name": "mock-upbit-btc-ticker",
+    "url": "ws://mock-upbit:8765",
+    "topic": "koreaSocketDataInBTC-ticker",
+    "key": "UPBIT:BTC:KRW",
+    "subscribe": [[{"ticket":"mock-upbit"},{"type":"ticker","codes":["KRW-BTC"]},{"format":"DEFAULT"}]]
+  },
+  {
+    "name": "mock-bithumb-btc-ticker",
+    "url": "ws://mock-bithumb:8765",
+    "topic": "koreaSocketDataInBTC-ticker",
+    "key": "BITHUMB:BTC:KRW",
+    "subscribe": [[{"ticket":"mock-bithumb"},{"type":"ticker","codes":["KRW-BTC"]},{"format":"DEFAULT"}]]
+  }
+]
