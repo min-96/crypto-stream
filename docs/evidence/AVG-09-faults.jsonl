@@ -1,0 +1,58 @@
+{"batch_id": 0, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326887109}
+{"batch_id": 1, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326890578}
+{"batch_id": 2, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326895037}
+{"batch_id": 3, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326896965}
+{"batch_id": 4, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326897320}
+{"batch_id": 5, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326901301}
+{"batch_id": 6, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326902392}
+{"batch_id": 7, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326906233}
+{"batch_id": 8, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326907722}
+{"batch_id": 9, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326911420}
+{"batch_id": 10, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326912350}
+{"batch_id": 10, "event": "committed", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326912705, "keys": [["BTC", 1793318460000], ["ETH", 1793318460000]]}
+{"batch_id": 11, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326917115}
+{"batch_id": 12, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326921310}
+{"batch_id": 13, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326922733}
+{"batch_id": 14, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326925943}
+{"batch_id": 15, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326931389}
+{"batch_id": 16, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326932343}
+{"batch_id": 16, "event": "committed", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326932449, "keys": [["BTC", 1793318520000]]}
+{"batch_id": 17, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326935454}
+{"batch_id": 18, "event": "start", "process": "14d015309f694fb38fd702020732f53e", "pid": 57, "wall_ms": 1793326936659}
+{"batch_id": 19, "event": "start", "process": "5bd391123b414477bb35ca8447b3ea31", "pid": 53, "wall_ms": 1793326951983}
+{"batch_id": 20, "event": "start", "process": "5bd391123b414477bb35ca8447b3ea31", "pid": 53, "wall_ms": 1793326955346}
+{"batch_id": 21, "event": "start", "process": "5bd391123b414477bb35ca8447b3ea31", "pid": 53, "wall_ms": 1793326961562}
+{"batch_id": 22, "event": "start", "process": "5bd391123b414477bb35ca8447b3ea31", "pid": 53, "wall_ms": 1793326962873}
+{"batch_id": 22, "event": "committed", "process": "5bd391123b414477bb35ca8447b3ea31", "pid": 53, "wall_ms": 1793326963302, "keys": [["BTC", 1793318580000], ["BTC", 1793318640000]]}
+{"batch_id": 23, "event": "start", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326979136}
+{"batch_id": 24, "event": "start", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326982609}
+{"batch_id": 25, "event": "start", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326986199}
+{"batch_id": 26, "event": "start", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326987594}
+{"batch_id": 27, "event": "start", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326991583}
+{"batch_id": 28, "event": "start", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326992507}
+{"batch_id": 28, "event": "committed", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326992922, "keys": [["BTC", 1793318700000], ["BTC", 1793318760000]]}
+{"batch_id": 28, "event": "inject", "process": "adbb222d292a4ad7925045a08c3d3652", "pid": 58, "wall_ms": 1793326992925, "fail_after": 4}
+{"batch_id": 28, "event": "start", "process": "1067cb6599e34c2ba60c61fc27283e66", "pid": 57, "wall_ms": 1793327005210}
+{"batch_id": 28, "event": "committed", "process": "1067cb6599e34c2ba60c61fc27283e66", "pid": 57, "wall_ms": 1793327006821, "keys": [["BTC", 1793318700000], ["BTC", 1793318760000]]}
+{"batch_id": 29, "event": "start", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327026416}
+{"batch_id": 30, "event": "start", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327031219}
+{"batch_id": 31, "event": "start", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327038903}
+{"batch_id": 32, "event": "start", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327040047}
+{"batch_id": 33, "event": "start", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327044284}
+{"batch_id": 34, "event": "start", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327047117}
+{"batch_id": 34, "event": "committed", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327047633, "keys": [["BTC", 1793318820000], ["BTC", 1793318880000]]}
+{"batch_id": 34, "event": "inject", "process": "64d010dc81014dfb874c20e03ee94567", "pid": 61, "wall_ms": 1793327047637, "fail_after": 6}
+{"batch_id": 34, "event": "start", "process": "29cf06cd82cd4448b95d828a9a7a434f", "pid": 56, "wall_ms": 1793327060610}
+{"batch_id": 34, "event": "committed", "process": "29cf06cd82cd4448b95d828a9a7a434f", "pid": 56, "wall_ms": 1793327062895, "keys": [["BTC", 1793318820000], ["BTC", 1793318880000]]}
+{"batch_id": 35, "event": "start", "process": "29cf06cd82cd4448b95d828a9a7a434f", "pid": 56, "wall_ms": 1793327069920}
+{"batch_id": 36, "event": "start", "process": "29cf06cd82cd4448b95d828a9a7a434f", "pid": 56, "wall_ms": 1793327073343}
+{"batch_id": 37, "event": "start", "process": "29cf06cd82cd4448b95d828a9a7a434f", "pid": 56, "wall_ms": 1793327078685}
+{"batch_id": 38, "event": "start", "process": "29cf06cd82cd4448b95d828a9a7a434f", "pid": 56, "wall_ms": 1793327079726}
+{"batch_id": 38, "event": "start", "process": "31cc780746d241aba24761caa2c4b0df", "pid": 58, "wall_ms": 1793327103203}
+{"batch_id": 38, "event": "committed", "process": "31cc780746d241aba24761caa2c4b0df", "pid": 58, "wall_ms": 1793327104805, "keys": [["BTC", 1793318940000], ["BTC", 1793319000000], ["ETH", 1793319000000]]}
+{"batch_id": 39, "event": "start", "process": "31cc780746d241aba24761caa2c4b0df", "pid": 58, "wall_ms": 1793327125735}
+{"batch_id": 40, "event": "start", "process": "31cc780746d241aba24761caa2c4b0df", "pid": 58, "wall_ms": 1793327131143}
+{"batch_id": 41, "event": "start", "process": "31cc780746d241aba24761caa2c4b0df", "pid": 58, "wall_ms": 1793327140496}
+{"batch_id": 42, "event": "start", "process": "31cc780746d241aba24761caa2c4b0df", "pid": 58, "wall_ms": 1793327141477}
+{"batch_id": 42, "event": "start", "process": "3594f0a91d0849dabb1b395619287d46", "pid": 55, "wall_ms": 1793327157046}
+{"batch_id": 42, "event": "committed", "process": "3594f0a91d0849dabb1b395619287d46", "pid": 55, "wall_ms": 1793327158253, "keys": [["BTC", 1793319060000], ["BTC", 1793319120000]]}

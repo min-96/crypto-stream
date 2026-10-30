@@ -1,0 +1,61 @@
+{
+  "subject": "Mock WebSocket to MySQL verification review",
+  "project": "coin-market-verify-20261030-a",
+  "date_utc": "2026-10-30",
+  "source": "Observed command outputs from the local verification session; no raw Kafka dump or MySQL query transcript was saved for this run.",
+  "commands": [
+    {
+      "command": "LOCAL_PIPELINE_PROJECT=coin-market-verify-20261030-a HARNESS_CLUSTER_ID=R3lQd0N2TnJkY2pBdERzYQ HARNESS_REPORT_DIR=/tmp/coin-market-verify-20261030-a ./infrastructure/tests/kafka/harness/local-pipeline.sh up",
+      "exit_code": 1,
+      "result": "Compose tried to pull the locally available coin-market-spark image and failed."
+    },
+    {
+      "command": "LOCAL_PIPELINE_PROJECT=coin-market-verify-20261030-a HARNESS_CLUSTER_ID=R3lQd0N2TnJkY2pBdERzYQ HARNESS_REPORT_DIR=/tmp/coin-market-verify-20261030-a docker compose --project-name coin-market-verify-20261030-a -f infrastructure/tests/kafka/harness/compose.yaml -f infrastructure/tests/kafka/harness/compose.local-pipeline.yaml up -d --build --pull never init-preprocessed-connector spark-average collector",
+      "exit_code": 0,
+      "result": "Kafka, Mock Upbit/Bithumb, Collector, preprocessing, Spark, MySQL, Connect and MinIO started in one Compose project."
+    },
+    {
+      "command": "LOCAL_PIPELINE_PROJECT=coin-market-verify-20261030-a HARNESS_CLUSTER_ID=R3lQd0N2TnJkY2pBdERzYQ HARNESS_REPORT_DIR=/tmp/coin-market-verify-20261030-a ./infrastructure/tests/kafka/harness/local-pipeline.sh verify",
+      "exit_code": 0,
+      "result": "LOCAL_PIPELINE_OK"
+    },
+    {
+      "command": "docker compose --project-name coin-market-verify-20261030-a -f infrastructure/tests/kafka/harness/compose.yaml -f infrastructure/tests/kafka/harness/compose.local-pipeline.yaml stop mock-upbit; then start mock-upbit",
+      "exit_codes": [0, 0],
+      "result": "Collector recorded disconnection and later connected source=mock-upbit-btc-ticker; Mock Upbit logged a new subscription at 03:53:05 UTC. A later Raw Kafka consumer output contained new UPBIT:BTC:KRW frames."
+    },
+    {
+      "command": "LOCAL_PIPELINE_PROJECT=coin-market-verify-20261030-a HARNESS_CLUSTER_ID=R3lQd0N2TnJkY2pBdERzYQ HARNESS_REPORT_DIR=/tmp/coin-market-verify-20261030-a ./infrastructure/tests/kafka/harness/local-pipeline.sh down",
+      "exit_code": 0,
+      "result": "Only this project's containers and network were removed; volumes were retained."
+    }
+  ],
+  "mysql_volume": {
+    "name": "coin-market-verify-20261030-a_local-mysql-data",
+    "created_at_utc": "2026-10-30T03:42:23Z",
+    "compose_project_label": "coin-market-verify-20261030-a",
+    "init_sql": "infrastructure/mysql/init/coin_average.sql",
+    "init_sql_inserts_rows": false
+  },
+  "comparison_output": {
+    "window_end_ms": 1793331960000,
+    "window_end_utc": "2026-10-30T03:46:00Z",
+    "coin": "BTC",
+    "preprocessed_kafka_counts": {"UPBIT": 59, "BITHUMB": 29},
+    "mysql_trade_price": "54825110.023378141437755698",
+    "independent_equal_exchange_weight_expected_trade_price": "54825110.023378141437755698",
+    "message_weighted_trade_price": "73350153.409090909090909091",
+    "fields_compared": ["opening_price", "trade_price", "max_price", "min_price", "prev_closing_price", "acc_trade_volume_24h", "signed_change_price", "signed_change_rate"],
+    "formula": "For each field: round_half_even_18((sum(UPBIT values)/59 + sum(BITHUMB values)/29)/2)",
+    "verification_code": "infrastructure/tests/kafka/harness/verify_local_pipeline.py",
+    "reuses_spark_aggregation_function": false
+  },
+  "scope": {
+    "verified": ["One Compose project connected both mock exchanges through Raw Kafka, preprocessing, Preprocessed Kafka, Spark and MySQL", "The verifier compared eight MySQL fields with its independent computation from Preprocessed Kafka input", "The MySQL volume was created for this run and the table initialization SQL has no seed rows", "Collector reconnected after Mock Upbit restart and new Upbit Raw Kafka frames were observed"],
+    "not_independently_reproducible_from_committed_artifacts": ["Per-record Kafka values and offsets for the compared window", "Per-exchange sums and means", "The eight raw MySQL query values", "A before-run SELECT COUNT(*) result"],
+    "not_tested": ["Spark restart in the Mock WebSocket end-to-end run", "More than BTC and two exchanges", "One-hour performance run"]
+  },
+  "related_kafka_source_correctness_evidence": "docs/evidence/AVG-09-correctness.json",
+  "related_raw_records": ["docs/evidence/AVG-09-faults.jsonl", "docs/evidence/AVG-09-progress.jsonl"],
+  "source_distinction": "AVG-09 correctness injects synthetic records directly into the Preprocessed Kafka topic and verifies real Kafka-source Spark/MySQL recovery. apps/average/tests/test_fault_recovery_stream.py is a separate file-source test with a fake JDBC connection."
+}

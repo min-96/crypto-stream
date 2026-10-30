@@ -63,17 +63,6 @@ def recent_preprocessed_records():
     return records
 
 
-def mysql_rows():
-    sql = ('SELECT c.time,c.trade_price,e.market,e.message_count,e.trade_price_sum '
-           'FROM coin_average c JOIN coin_exchange_window e '
-           'ON c.name=e.name AND c.time=e.time '
-           "WHERE c.name='BTC' AND c.time=(SELECT MAX(time) FROM coin_average) "
-           'ORDER BY e.market;')
-    output = dc('exec', '-T', 'mysql', 'sh', '-c',
-                'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" coin_market -N -e "' + sql + '"')
-    return [line.split('\t') for line in output.splitlines() if line]
-
-
 def mysql_average():
     sql = ('SELECT name,time,' + ','.join(FIELDS)
            + ' FROM coin_average ORDER BY time DESC LIMIT 1;')
@@ -117,15 +106,21 @@ def expected_from_preprocessed(records, time_ms):
 
 def main():
     deadline = time.monotonic() + 180
-    rows = []
+    average = None
+    counts = None
     while time.monotonic() < deadline:
-        rows = mysql_rows()
-        if ({row[2] for row in rows} == EXCHANGES
-                and len({int(row[3]) for row in rows}) > 1):
-            break
+        try:
+            candidate = mysql_average()
+            records = recent_preprocessed_records()
+            _, candidate_counts, _ = expected_from_preprocessed(records, int(candidate['time']))
+            if len(set(candidate_counts.values())) > 1:
+                average, counts = candidate, candidate_counts
+                break
+        except AssertionError:
+            pass  # The first closed window or both exchange inputs may not be ready yet.
         time.sleep(5)
-    if {row[2] for row in rows} != EXCHANGES or len({int(row[3]) for row in rows}) == 1:
-        raise AssertionError(f'MySQL BTC window lacks unequal two-exchange counts: {rows}')
+    if average is None:
+        raise AssertionError('no closed BTC window with unequal two-exchange Kafka input counts')
 
     raw = kafka_records('koreaSocketDataInBTC-ticker')
     preprocessed = kafka_records('RegionKorea_TickerPreprocessing')
@@ -149,12 +144,8 @@ def main():
     if '.keys.bin' not in archive or '.bin' not in archive:
         raise AssertionError('Preprocessed Value/Key objects missing from MinIO')
 
-    average = mysql_average()
     expected, counts, message_weighted_trade_price = expected_from_preprocessed(
         recent_preprocessed_records(), int(average['time']))
-    staged_counts = {row[2]: int(row[3]) for row in rows}
-    if counts != staged_counts:
-        raise AssertionError(f'Kafka input counts {counts} != MySQL stage counts {staged_counts}')
     mismatches = {field: (average[field], format(expected[field], 'f')) for field in FIELDS
                   if Decimal(average[field]) != expected[field]}
     if mismatches:

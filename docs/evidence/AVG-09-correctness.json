@@ -1,0 +1,918 @@
+{
+  "task": "AVG-09 correctness",
+  "project": "coin-market-avg09",
+  "checkpoint": "/checkpoints/correctness-20261030T022007Z",
+  "started_ms": 1793326807426,
+  "finished_ms": 1793327160995,
+  "error": null,
+  "passed": true,
+  "checks": [
+    {
+      "check": "S1 exchange data arrived in separate micro-batches",
+      "passed": true,
+      "batches": [
+        [
+          0
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          5
+        ]
+      ]
+    },
+    {
+      "check": "S1 BTC window 0 = (avg(100, 102) + 110) / 2, 59.999 in, 60.000 out",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318460000
+      ],
+      "expected": "105.500000000000000000",
+      "got": "105.500000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S1 ETH window 0 = 100\u00b7100\u00b7101 repeating decimal",
+      "passed": true,
+      "key": [
+        "ETH",
+        1793318460000
+      ],
+      "expected": "100.333333333333333333",
+      "got": "100.333333333333333333",
+      "all_fields_match": true
+    },
+    {
+      "check": "S1 late event of a finalized window is dropped by watermark",
+      "passed": true,
+      "dropped": 1
+    },
+    {
+      "check": "S1 BTC window 0 unchanged after the late event",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318460000
+      ],
+      "expected": "105.500000000000000000",
+      "got": "105.500000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S1 event older than the watermark in an open window is not dropped",
+      "passed": true,
+      "dropped": 0
+    },
+    {
+      "check": "S1 BTC window 1 = (avg(1000, 1000, 1000) + 120) / 2",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318520000
+      ],
+      "expected": "560.000000000000000000",
+      "got": "560.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S5 window 2 state (UPBIT 1000 before the kill) survives the restart",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318580000
+      ],
+      "expected": "1000.000000000000000000",
+      "got": "1000.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S5 window 3 = (200 before kill + 300 after) / 2",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318640000
+      ],
+      "expected": "250.000000000000000000",
+      "got": "250.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S5 a new Spark process committed after the restart",
+      "passed": true,
+      "new_processes": [
+        "5bd391123b414477bb35ca8447b3ea31"
+      ]
+    },
+    {
+      "check": "S3 Spark stopped after COMMIT (exception)",
+      "passed": true,
+      "batch_id": 28,
+      "exit_code": 1,
+      "keys": [
+        [
+          "BTC",
+          1793318700000
+        ],
+        [
+          "BTC",
+          1793318760000
+        ]
+      ]
+    },
+    {
+      "check": "S3 same batch_id re-ran after restart with the same keys",
+      "passed": true,
+      "batch_id": 28,
+      "processes": [
+        "adbb222d292a4ad7925045a08c3d3652",
+        "1067cb6599e34c2ba60c61fc27283e66"
+      ],
+      "keys": [
+        [
+          "BTC",
+          1793318700000
+        ],
+        [
+          "BTC",
+          1793318760000
+        ]
+      ]
+    },
+    {
+      "check": "S3 re-run left the same rows and values",
+      "passed": true,
+      "rows": 7
+    },
+    {
+      "check": "S3 window 5 = (10 + 20) / 2",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318760000
+      ],
+      "expected": "15.000000000000000000",
+      "got": "15.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S3 window 4 = UPBIT 50",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318700000
+      ],
+      "expected": "50.000000000000000000",
+      "got": "50.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S4 Spark stopped after COMMIT (pause)",
+      "passed": true,
+      "batch_id": 34,
+      "exit_code": 137,
+      "keys": [
+        [
+          "BTC",
+          1793318820000
+        ],
+        [
+          "BTC",
+          1793318880000
+        ]
+      ]
+    },
+    {
+      "check": "S4 same batch_id re-ran after restart with the same keys",
+      "passed": true,
+      "batch_id": 34,
+      "processes": [
+        "64d010dc81014dfb874c20e03ee94567",
+        "29cf06cd82cd4448b95d828a9a7a434f"
+      ],
+      "keys": [
+        [
+          "BTC",
+          1793318820000
+        ],
+        [
+          "BTC",
+          1793318880000
+        ]
+      ]
+    },
+    {
+      "check": "S4 re-run left the same rows and values",
+      "passed": true,
+      "rows": 9
+    },
+    {
+      "check": "S4 window 7 = (40 + 60) / 2",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318880000
+      ],
+      "expected": "50.000000000000000000",
+      "got": "50.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S4 window 6 = UPBIT 30",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318820000
+      ],
+      "expected": "30.000000000000000000",
+      "got": "30.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S2a write failed before COMMIT and Spark stopped",
+      "passed": true,
+      "batch_id": 38,
+      "exit_code": 1
+    },
+    {
+      "check": "S2a BTC rows sent before the failing ETH row were rolled back",
+      "passed": true
+    },
+    {
+      "check": "S2a re-run committed the failed batch once",
+      "passed": true,
+      "keys": [
+        [
+          "BTC",
+          1793318940000
+        ],
+        [
+          "BTC",
+          1793319000000
+        ],
+        [
+          "ETH",
+          1793319000000
+        ]
+      ]
+    },
+    {
+      "check": "S2a window 8 = UPBIT 70",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318940000
+      ],
+      "expected": "70.000000000000000000",
+      "got": "70.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S2a BTC window 9 = 80",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793319000000
+      ],
+      "expected": "80.000000000000000000",
+      "got": "80.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S2a ETH window 9 = 90 (not the blocker's 0)",
+      "passed": true,
+      "key": [
+        "ETH",
+        1793319000000
+      ],
+      "expected": "90.000000000000000000",
+      "got": "90.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S2b batch failed while MySQL was down and Spark stopped",
+      "passed": true,
+      "exit_code": 1
+    },
+    {
+      "check": "S2b window 10 = 1 after MySQL recovery",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793319060000
+      ],
+      "expected": "1.000000000000000000",
+      "got": "1.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "S2b window 11 = 5 after MySQL recovery",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793319120000
+      ],
+      "expected": "5.000000000000000000",
+      "got": "5.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final: one row per (name, time), exactly the expected keys",
+      "passed": true,
+      "rows": 14,
+      "unexpected": [],
+      "missing": []
+    },
+    {
+      "check": "final value BTC 1793318460000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318460000
+      ],
+      "expected": "105.500000000000000000",
+      "got": "105.500000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value ETH 1793318460000",
+      "passed": true,
+      "key": [
+        "ETH",
+        1793318460000
+      ],
+      "expected": "100.333333333333333333",
+      "got": "100.333333333333333333",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318520000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318520000
+      ],
+      "expected": "560.000000000000000000",
+      "got": "560.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318580000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318580000
+      ],
+      "expected": "1000.000000000000000000",
+      "got": "1000.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318640000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318640000
+      ],
+      "expected": "250.000000000000000000",
+      "got": "250.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318700000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318700000
+      ],
+      "expected": "50.000000000000000000",
+      "got": "50.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318760000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318760000
+      ],
+      "expected": "15.000000000000000000",
+      "got": "15.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318820000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318820000
+      ],
+      "expected": "30.000000000000000000",
+      "got": "30.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318880000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318880000
+      ],
+      "expected": "50.000000000000000000",
+      "got": "50.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793318940000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793318940000
+      ],
+      "expected": "70.000000000000000000",
+      "got": "70.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793319000000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793319000000
+      ],
+      "expected": "80.000000000000000000",
+      "got": "80.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value ETH 1793319000000",
+      "passed": true,
+      "key": [
+        "ETH",
+        1793319000000
+      ],
+      "expected": "90.000000000000000000",
+      "got": "90.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793319060000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793319060000
+      ],
+      "expected": "1.000000000000000000",
+      "got": "1.000000000000000000",
+      "all_fields_match": true
+    },
+    {
+      "check": "final value BTC 1793319120000",
+      "passed": true,
+      "key": [
+        "BTC",
+        1793319120000
+      ],
+      "expected": "5.000000000000000000",
+      "got": "5.000000000000000000",
+      "all_fields_match": true
+    }
+  ],
+  "rerun_batches": {
+    "28": [
+      "adbb222d292a4ad7925045a08c3d3652",
+      "1067cb6599e34c2ba60c61fc27283e66"
+    ],
+    "34": [
+      "64d010dc81014dfb874c20e03ee94567",
+      "29cf06cd82cd4448b95d828a9a7a434f"
+    ]
+  },
+  "dropped_by_watermark_total": 1,
+  "timeline": [
+    {
+      "wall_ms": 1793326872065,
+      "event": "input reset",
+      "topic": "RegionKorea_TickerPreprocessing"
+    },
+    {
+      "wall_ms": 1793326872479,
+      "event": "spark started",
+      "fail_after": null,
+      "mode": "exception",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793326872479,
+      "event": "scenario s1_equal_weight_boundary_late"
+    },
+    {
+      "wall_ms": 1793326874259,
+      "event": "produced S1.1 UPBIT BTC 100, UPBIT ETH 100",
+      "offsets": [
+        0,
+        1
+      ]
+    },
+    {
+      "wall_ms": 1793326890312,
+      "event": "read S1.1 UPBIT BTC 100, UPBIT ETH 100",
+      "batches": [
+        0
+      ]
+    },
+    {
+      "wall_ms": 1793326892604,
+      "event": "produced S1.2 BITHUMB BTC 110, UPBIT ETH 100",
+      "offsets": [
+        2,
+        3
+      ]
+    },
+    {
+      "wall_ms": 1793326897623,
+      "event": "read S1.2 BITHUMB BTC 110, UPBIT ETH 100",
+      "batches": [
+        2,
+        3
+      ]
+    },
+    {
+      "wall_ms": 1793326899058,
+      "event": "produced S1.3 UPBIT BTC 102 @59.999, UPBIT ETH 101",
+      "offsets": [
+        4,
+        5
+      ]
+    },
+    {
+      "wall_ms": 1793326903073,
+      "event": "read S1.3 UPBIT BTC 102 @59.999, UPBIT ETH 101",
+      "batches": [
+        5
+      ]
+    },
+    {
+      "wall_ms": 1793326904701,
+      "event": "produced S1.4 UPBIT BTC 1000 @60.000 (next window)",
+      "offsets": [
+        6
+      ]
+    },
+    {
+      "wall_ms": 1793326908711,
+      "event": "read S1.4 UPBIT BTC 1000 @60.000 (next window)",
+      "batches": [
+        7
+      ]
+    },
+    {
+      "wall_ms": 1793326909930,
+      "event": "produced S1.5 UPBIT BTC @70.000 \u2192 watermark reaches window 0 end",
+      "offsets": [
+        7
+      ]
+    },
+    {
+      "wall_ms": 1793326912948,
+      "event": "read S1.5 UPBIT BTC @70.000 \u2192 watermark reaches window 0 end",
+      "batches": [
+        9
+      ]
+    },
+    {
+      "wall_ms": 1793326915216,
+      "event": "produced S1.6 late BITHUMB BTC 9999 for finalized window 0",
+      "offsets": [
+        8
+      ]
+    },
+    {
+      "wall_ms": 1793326918231,
+      "event": "read S1.6 late BITHUMB BTC 9999 for finalized window 0",
+      "batches": [
+        11
+      ]
+    },
+    {
+      "wall_ms": 1793326919286,
+      "event": "produced S1.7 UPBIT BTC @110.000 \u2192 watermark 100.000",
+      "offsets": [
+        9
+      ]
+    },
+    {
+      "wall_ms": 1793326923310,
+      "event": "read S1.7 UPBIT BTC @110.000 \u2192 watermark 100.000",
+      "batches": [
+        12
+      ]
+    },
+    {
+      "wall_ms": 1793326924600,
+      "event": "produced S1.8 BITHUMB BTC 120 @90.000, older than watermark, window 1 open",
+      "offsets": [
+        10
+      ]
+    },
+    {
+      "wall_ms": 1793326927613,
+      "event": "read S1.8 BITHUMB BTC 120 @90.000, older than watermark, window 1 open",
+      "batches": [
+        14
+      ]
+    },
+    {
+      "wall_ms": 1793326928830,
+      "event": "produced S1.9 UPBIT BTC @130.000 \u2192 window 1 final",
+      "offsets": [
+        11
+      ]
+    },
+    {
+      "wall_ms": 1793326932853,
+      "event": "read S1.9 UPBIT BTC @130.000 \u2192 window 1 final",
+      "batches": [
+        15
+      ]
+    },
+    {
+      "wall_ms": 1793326933094,
+      "event": "scenario s5_restart_keeps_open_window_state"
+    },
+    {
+      "wall_ms": 1793326934146,
+      "event": "produced S5.1 UPBIT BTC 200 in window 3",
+      "offsets": [
+        12
+      ]
+    },
+    {
+      "wall_ms": 1793326937157,
+      "event": "read S5.1 UPBIT BTC 200 in window 3",
+      "batches": [
+        17
+      ]
+    },
+    {
+      "wall_ms": 1793326937603,
+      "event": "spark killed (SIGKILL)"
+    },
+    {
+      "wall_ms": 1793326938636,
+      "event": "spark started",
+      "fail_after": null,
+      "mode": "exception",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793326941275,
+      "event": "produced S5.2 BITHUMB BTC 300 in window 3 after restart",
+      "offsets": [
+        13
+      ]
+    },
+    {
+      "wall_ms": 1793326956333,
+      "event": "read S5.2 BITHUMB BTC 300 in window 3 after restart",
+      "batches": [
+        19
+      ]
+    },
+    {
+      "wall_ms": 1793326957748,
+      "event": "produced S5.3 UPBIT BTC 50 in window 4 \u2192 windows 2, 3 final",
+      "offsets": [
+        14
+      ]
+    },
+    {
+      "wall_ms": 1793326963780,
+      "event": "read S5.3 UPBIT BTC 50 in window 4 \u2192 windows 2, 3 final",
+      "batches": [
+        21
+      ]
+    },
+    {
+      "wall_ms": 1793326964151,
+      "event": "scenario s3_exception_after_commit"
+    },
+    {
+      "wall_ms": 1793326965361,
+      "event": "spark started",
+      "fail_after": 4,
+      "mode": "exception",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793326967013,
+      "event": "produced S3.1 UPBIT BTC 10 in window 5",
+      "offsets": [
+        15
+      ]
+    },
+    {
+      "wall_ms": 1793326983073,
+      "event": "read S3.1 UPBIT BTC 10 in window 5",
+      "batches": [
+        23
+      ]
+    },
+    {
+      "wall_ms": 1793326984412,
+      "event": "produced S3.2 BITHUMB BTC 20 in window 5",
+      "offsets": [
+        16
+      ]
+    },
+    {
+      "wall_ms": 1793326988433,
+      "event": "read S3.2 BITHUMB BTC 20 in window 5",
+      "batches": [
+        25
+      ]
+    },
+    {
+      "wall_ms": 1793326989805,
+      "event": "produced S3.3 UPBIT BTC 30 in window 6 \u2192 windows 4, 5 final",
+      "offsets": [
+        17
+      ]
+    },
+    {
+      "wall_ms": 1793326993853,
+      "event": "spark exited",
+      "exit_code": 1,
+      "oom_killed": false
+    },
+    {
+      "wall_ms": 1793326994674,
+      "event": "spark started",
+      "fail_after": null,
+      "mode": "exception",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793327008294,
+      "event": "scenario s4_kill_after_commit"
+    },
+    {
+      "wall_ms": 1793327009482,
+      "event": "spark started",
+      "fail_after": 6,
+      "mode": "pause",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793327011030,
+      "event": "produced S4.1 UPBIT BTC 40 in window 7",
+      "offsets": [
+        18
+      ]
+    },
+    {
+      "wall_ms": 1793327031251,
+      "event": "read S4.1 UPBIT BTC 40 in window 7",
+      "batches": [
+        29
+      ]
+    },
+    {
+      "wall_ms": 1793327033204,
+      "event": "produced S4.2 BITHUMB BTC 60 in window 7",
+      "offsets": [
+        19
+      ]
+    },
+    {
+      "wall_ms": 1793327040247,
+      "event": "read S4.2 BITHUMB BTC 60 in window 7",
+      "batches": [
+        31
+      ]
+    },
+    {
+      "wall_ms": 1793327041583,
+      "event": "produced S4.3 UPBIT BTC 70 in window 8 \u2192 windows 6, 7 final",
+      "offsets": [
+        20
+      ]
+    },
+    {
+      "wall_ms": 1793327048918,
+      "event": "spark killed (SIGKILL)"
+    },
+    {
+      "wall_ms": 1793327049805,
+      "event": "spark started",
+      "fail_after": null,
+      "mode": "exception",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793327064421,
+      "event": "scenario s2a_rollback_before_commit"
+    },
+    {
+      "wall_ms": 1793327065706,
+      "event": "produced S2a.1 UPBIT BTC 80, UPBIT ETH 90 in window 9",
+      "offsets": [
+        21,
+        22
+      ]
+    },
+    {
+      "wall_ms": 1793327073750,
+      "event": "read S2a.1 UPBIT BTC 80, UPBIT ETH 90 in window 9",
+      "batches": [
+        35
+      ]
+    },
+    {
+      "wall_ms": 1793327075714,
+      "event": "produced S2a.2 UPBIT BTC 1 in window 10 \u2192 windows 8, 9 final",
+      "offsets": [
+        23
+      ]
+    },
+    {
+      "wall_ms": 1793327086884,
+      "event": "spark exited",
+      "exit_code": 1,
+      "oom_killed": false
+    },
+    {
+      "wall_ms": 1793327088331,
+      "event": "spark started",
+      "fail_after": null,
+      "mode": "exception",
+      "trigger": null
+    },
+    {
+      "wall_ms": 1793327106989,
+      "event": "scenario s2b_mysql_down"
+    },
+    {
+      "wall_ms": 1793327112110,
+      "event": "produced S2b.1 UPBIT BTC 5 in window 11",
+      "offsets": [
+        24
+      ]
+    },
+    {
+      "wall_ms": 1793327131238,
+      "event": "read S2b.1 UPBIT BTC 5 in window 11",
+      "batches": [
+        39
+      ]
+    },
+    {
+      "wall_ms": 1793327133489,
+      "event": "mysql stopped"
+    },
+    {
+      "wall_ms": 1793327136063,
+      "event": "produced S2b.2 UPBIT BTC 7 in window 12 \u2192 windows 10, 11 final",
+      "offsets": [
+        25
+      ]
+    },
+    {
+      "wall_ms": 1793327142664,
+      "event": "spark exited",
+      "exit_code": 1,
+      "oom_killed": false
+    },
+    {
+      "wall_ms": 1793327144248,
+      "event": "mysql started"
+    },
+    {
+      "wall_ms": 1793327144959,
+      "event": "spark started",
+      "fail_after": null,
+      "mode": "exception",
+      "trigger": null
+    }
+  ],
+  "memory": {
+    "coin-market-avg09-spark-average-1": "597.1MiB / 7.654GiB",
+    "coin-market-avg09-mysql-1": "440.6MiB / 7.654GiB",
+    "coin-market-avg09-kafka-1-1": "451.4MiB / 7.654GiB",
+    "coin-market-avg09-kafka-3-1": "467.8MiB / 7.654GiB",
+    "coin-market-avg09-kafka-2-1": "523.1MiB / 7.654GiB",
+    "coin-market-spark-worker-1": "147.7MiB / 7.654GiB",
+    "coin-market-spark-master-1": "176.9MiB / 7.654GiB",
+    "coin-market-kafka-1-1": "476.9MiB / 7.654GiB",
+    "coin-market-minio-1": "89.5MiB / 7.654GiB",
+    "coin-market-kafka-2-1": "534MiB / 7.654GiB",
+    "coin-market-kafka-3-1": "472.6MiB / 7.654GiB",
+    "coin-market-mysql-1": "105.3MiB / 7.654GiB"
+  },
+  "records": {
+    "faults": "/Users/min96/coin_market/infrastructure/tests/kafka/harness/reports/coin-market-avg09/correctness-20261030T022007Z/faults.jsonl",
+    "progress": "/Users/min96/coin_market/infrastructure/tests/kafka/harness/reports/coin-market-avg09/correctness-20261030T022007Z/progress.jsonl"
+  }
+}

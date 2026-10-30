@@ -76,6 +76,38 @@ class CollectorContractTests(unittest.TestCase):
                 asyncio.run(collector.collect(self.source(), producer))
         connect.assert_called_once()
 
+    def test_collect_reconnects_after_websocket_closes(self):
+        class Socket:
+            def __init__(self, frame):
+                self.frame = frame
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *_):
+                pass
+
+            def __aiter__(self):
+                async def frames():
+                    yield self.frame
+                return frames()
+
+        producer = types.SimpleNamespace(send_and_wait=AsyncMock(return_value=object()))
+        attempts = [Socket(b'first'), Socket(b'after-reconnect')]
+
+        def connect(*_args, **_kwargs):
+            if attempts:
+                return attempts.pop(0)
+            raise asyncio.CancelledError()
+
+        with patch.object(collector.websockets, 'connect', side_effect=connect) as opened, \
+                patch.object(collector.asyncio, 'sleep', new_callable=AsyncMock):
+            with self.assertRaises(asyncio.CancelledError):
+                asyncio.run(collector.collect(self.source(), producer))
+        self.assertEqual(opened.call_count, 3)
+        self.assertEqual([call.kwargs['value'] for call in producer.send_and_wait.await_args_list],
+                         [b'first', b'after-reconnect'])
+
 
 if __name__ == '__main__':
     unittest.main()
